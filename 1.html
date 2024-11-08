@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>周五放假happy</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <style>
+        html, body, #container {
+            height: 100%;
+            width: 100%;
+        }
+
+        .input-card .btn{
+            margin-right: 1.2rem;
+            width: 9rem;
+        }
+
+        .input-card .btn:last-child{
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<div class="input-card">
+    <h4>周五放假happy</h4>
+    <div class="input-item">
+        <input type="button" class="btn" value="绘制路线" id="resume" onclick="huizhi()"/>
+        <input type="button" class="btn" value="开始动画" id="start" onclick="startAnimation()"/>        
+    </div>
+    <div class="input-item">       
+        <input type="button" class="btn" value="停止动画" id="stop" onclick="stopAnimation()"/>
+        <input type="button" class="btn" value="继续动画" id="resume" onclick="resumeAnimation()"/>
+    </div>
+    
+</div>
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: "ca45b9451ea988e18c5e25d7121672d0",
+    };
+  </script>      
+  <script src="https://webapi.amap.com/maps?v=2.0&key=a4f65ee9d2f0d93d30297a666e2d6a58"></script>
+<script>
+    // JSAPI2.0 使用覆盖物动画必须先加载动画插件
+    AMap.plugin('AMap.MoveAnimation', function(){
+        var marker, lineArr = [[118.285021,34.96778],[118.285016,34.967964],[118.283083,34.968211],[118.280662,34.968537],[118.280762,34.969542],[118.280935,34.972198],[118.280902,34.972371],[118.280945,34.972614],[118.281007,34.972868],[118.280673,34.972909],[118.281013,34.972866],[118.281129,34.973943],[118.281222,34.97419],[118.281314,34.97419],[118.281368,34.974212],[118.281359,34.974285],[118.281324,34.974323],[118.28199,34.974935],[118.282221,34.97507],[118.282269,34.975321],[118.28234,34.976869],[118.285222,34.976822],[118.285101,34.982092],[118.285012,34.987467],[118.284952,34.98992]];
+
+        var map = new AMap.Map("container", {
+            resizeEnable: true,
+            center: [118.285021,34.96778],
+            zoom: 17
+        });
+
+        marker = new AMap.Marker({
+            map: map,
+            position: [118.285021,34.96778],
+            icon: "https://a.amap.com/jsapi_demos/static/demo-center-v2/car.png",
+            offset: new AMap.Pixel(-13, -26),
+        });
+
+        
+        var text =new AMap.Text({
+          position:new AMap.LngLat(118.284952,34.98992),
+          anchor:'top-right',
+          text: '双月湖公园',
+          style:{'background-color':'pink'},
+        });
+        map.add(text);
+
+        var text1 =new AMap.Text({
+          position:new AMap.LngLat(118.285021,34.96778),
+          anchor:'top-right',
+          text: '临沂第十八中学',
+          style:{'background-color':'green'},
+        });
+        map.add(text1);
+
+        
+        var text2 =new AMap.Text({
+          position:new AMap.LngLat(118.281007,34.972868),
+          anchor:'top-right',
+          text: '家',
+          style:{'background-color':'yellow'},
+        });
+        map.add(text2);
+
+        var passedPolyline = new AMap.Polyline({
+            map: map,
+            strokeColor: "#AF5",  //线颜色
+            strokeWeight: 6,      //线宽
+        });
+
+
+        marker.on('moving', function (e) {
+            passedPolyline.setPath(e.passedPath);
+            map.setCenter(e.target.getPosition(),true)
+        });
+
+        map.setFitView();
+
+        window.huizhi = function huizhi () {
+            // 绘制轨迹
+            var polyline = new AMap.Polyline({
+            map: map,
+            path: lineArr,
+            showDir:true,
+            strokeColor: "#28F",  //线颜色
+            // strokeOpacity: 1,     //线透明度
+            strokeWeight: 6,      //线宽
+            // strokeStyle: "solid"  //线样式
+        });
+        map.setFitView();
+        };
+
+        window.startAnimation = function startAnimation () {
+            marker.moveAlong(lineArr, {
+                // 每一段的时长
+                duration: 500,//可根据实际采集时间间隔设置
+                // JSAPI2.0 是否延道路自动设置角度在 moveAlong 里设置
+                autoRotation: true,
+            });
+        };
+        
+
+        window.resumeAnimation = function () {
+            marker.resumeMove();
+        };
+
+        window.stopAnimation = function () {
+            marker.stopMove();
+        };
+    });
+</script>
+</body>
+</html>
